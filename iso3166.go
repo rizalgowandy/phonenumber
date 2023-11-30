@@ -10,15 +10,27 @@ type ISO3166 struct {
 	PhoneNumberLengths []int
 }
 
+func init() {
+	// Run once during package initialization in order to avoid data races
+	// https://go.dev/doc/effective_go#init
+	populateISO3166()
+}
+
 var iso3166Datas []ISO3166
 
-// GetISO3166 ...
+// GetISO3166 returns the ISO3166 configuration for each country.
+// Data are loaded during package initialization.
 func GetISO3166() []ISO3166 {
+	return iso3166Datas
+}
+
+// populateISO3166 contains the definitions of the per-country mobile number configuration.
+// It operates on the iso3166Datas global variable and will return it after population.
+func populateISO3166() {
 	if iso3166Datas != nil {
-		return iso3166Datas
+		return
 	}
 
-	iso3166Datas = []ISO3166{}
 	var i = ISO3166{}
 
 	i.Alpha2 = "US"
@@ -1608,6 +1620,14 @@ func GetISO3166() []ISO3166 {
 	i.PhoneNumberLengths = []int{7}
 	iso3166Datas = append(iso3166Datas, i)
 
+	i.Alpha2 = "SZ"
+	i.Alpha3 = "SWZ"
+	i.CountryCode = "268"
+	i.CountryName = "Swaziland"
+	i.MobileBeginWith = []string{"7"}
+	i.PhoneNumberLengths = []int{8}
+	iso3166Datas = append(iso3166Datas, i)
+
 	i.Alpha2 = "SY"
 	i.Alpha3 = "SYR"
 	i.CountryCode = "963"
@@ -1871,6 +1891,4 @@ func GetISO3166() []ISO3166 {
 	i.MobileBeginWith = []string{"71", "73", "77"}
 	i.PhoneNumberLengths = []int{9}
 	iso3166Datas = append(iso3166Datas, i)
-
-	return iso3166Datas
 }
